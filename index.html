@@ -142,6 +142,12 @@
                 animation: fadeIn 1s ease-in-out;
             }
         }
+        .green{
+            color: green;
+        }
+        .red{
+            color: #a00000;
+        }
 
         .messages-live {
             display: flex;
@@ -364,14 +370,13 @@
                 if (!messagesResult.includes(message)) {
                     messagesResult.push(message);
                     createHistoric()
-
                 }
             }
 
             return signal;
         };
 
-        const renderSignal = async () => {
+        const renderSignal =  async () => {
 
             const messagesValues = document.querySelector(".messages-live")
             const signalValue = document.querySelector(".signalContainer")
@@ -395,9 +400,18 @@
 
                     load.style.display = "none";
                 })
+
+                if(Number(signal.signalEntity.number_signal)>=2){
+                    signalValue.classList.add("green")
+                }
+                else{
+                    signalValue.classList.add("red")
+
+                }
                 signalValue.innerText = `${signal.signalEntity.number_signal} x`
+
                 protection.innerText = "Até 3 Gales"
-                after.innerHTML = "<p>Alto: 2 x</p> <p>Baixo: 10 x"
+                after.innerHTML = "<p class= 'green'>Alto: 2 x</p> <p class='red'>Baixo: 10 x"
             }
             else {
                 loader.forEach(load => {
@@ -420,20 +434,30 @@
             messageAnalytcs = messages[randomIndex];
         };
 
-        const intervalId = setInterval(renderSignal, 5000);
+        const intervalId = setInterval(renderSignal, 1000);
 
-        const signalsInterval = setInterval(updateMessageAnalytcs, 2000);
+        const signalsInterval = setInterval(updateMessageAnalytcs, 8000);
         renderSignal()
 
         const createHistoric = () => {
+
             const ul = document.querySelector(".resultUl")
+            ul.innerHTML=""
+            
             messagesResult.map((message) => {
                 const li = document.createElement("li");
                 const parts = message.split("-");
+                if(Number(parts[1])>=2){
+                    li.classList.add("green")
+                }
+                else{
+                    li.classList.add("red")
+                }
                 li.innerText = `${parts[0]} - ${parts[1]}`;
                 ul.append(li);
             });
         }
+       
 
     </script>
 </body>

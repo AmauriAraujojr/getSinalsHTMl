@@ -183,7 +183,7 @@
             width: 100%;
             background-color: black;
             border-radius: 8px;
-            height: 40px;
+            height: 50px;
         }
 
         .result {
@@ -280,7 +280,7 @@
     <div class="signal_component">
         <div class="box">
             <span>
-                <h3>Saída em:</h3>
+                <h3>Entar após:</h3>
                 <div class="exit-container">
                     <p class="signalContainer">
                     <div class="loader"></div>
@@ -305,6 +305,7 @@
                 <div class="exit-container">
 
                     <p class="after">
+                      
                     <div class="loader"></div>
 
                     </p>
@@ -376,7 +377,7 @@
             const signalValue = document.querySelector(".signalContainer")
             const protection = document.querySelector(".protection")
             const after = document.querySelector(".after")
-
+            
 
             const signal = await getSignals();
             let message = "";
@@ -396,7 +397,7 @@
                 })
                 signalValue.innerText = `${signal.signalEntity.number_signal} x`
                 protection.innerText = "Até 3 Gales"
-                after.innerText = "20 x"
+                after.innerHTML = "<p>Alto: 2 x</p> <p>Baixo: 10 x"
             }
             else {
                 loader.forEach(load => {

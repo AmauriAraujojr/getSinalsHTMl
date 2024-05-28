@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GetSinals</title>
 
-
     <style>
         html,
         body,
@@ -122,19 +121,21 @@
 
         body {
 
-            background-color: #212530;
+            background-color: black;
+
         }
 
+
         .signal_component {
-            background-color: black;
+            background-color: #212530;
+            padding: 20px;
             border-radius: 16px;
-            width: 90%;
+            width: 60%;
             max-width: 1400px;
             height: 330px;
             margin: 20px auto;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             gap: 20px;
 
             .fade-in {
@@ -153,6 +154,7 @@
             width: 100%;
             max-width: 100%;
             background-color: #a00000;
+
         }
 
         .box {
@@ -160,6 +162,7 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
+            width: 100%;
 
         }
 
@@ -170,19 +173,35 @@
             height: 80px;
             color: white;
             margin: 0 auto;
-            align-items: center;
+            width: 100%;
         }
 
         .exit-container {
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            width: 100px;
-            gap: 10px;
-            background-color: #212530;
+            width: 100%;
+            background-color: black;
             border-radius: 8px;
-            height: 100px;
+            height: 40px;
+        }
+
+        .result {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            gap: 25px;
+        }
+
+        .result span {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            height: 80px;
+            color: white;
+            margin: 0 auto;
+            width: 50%;
         }
 
         @keyframes fadeIn {
@@ -218,17 +237,15 @@
         .messages-result {
             display: flex;
             gap: 10px;
-            width: 100%;
             overflow-x: scroll;
             flex-direction: column;
             color: white;
-            padding: 20px;
         }
 
         ul {
             display: flex;
             gap: 10px;
-            width: 100%;
+            max-width: 100%;
             overflow-x: scroll;
             flex-wrap: nowrap;
             white-space: nowrap;
@@ -241,7 +258,7 @@
             font-size: 10px;
             list-style: none;
             color: white;
-            background-color: #212530;
+            background-color: black;
             padding: 10px;
             border-radius: 8px;
         }
@@ -260,7 +277,59 @@
 <body>
 
 
+    <div class="signal_component">
+        <div class="box">
+            <span>
+                <h3>Saída em:</h3>
+                <div class="exit-container">
+                    <p class="signalContainer">
+                    <div class="loader"></div>
+                    </p>
+                </div>
+            </span>
+        </div>
+        <div class="result">
+            <span>
+                <h3>Proteções:</h3>
+                <div class="exit-container">
+
+                    <p class="protection">
+                    <div class="loader"></div>
+
+                    </p>
+                </div>
+            </span>
+
+            <span>
+                <h3>Sair após:</h3>
+                <div class="exit-container">
+
+                    <p class="after">
+                    <div class="loader"></div>
+
+                    </p>
+                </div>
+            </span>
+
+        </div>
+
+        <div class="messages-live"></div>
+
+        <div class="messages-result">
+            <h3>
+                Histórico de resultados
+            </h3>
+            <ul class="resultUl">
+
+            </ul>
+        </div>
+    </div>
+
+
+
+
     <script>
+
         const baseUrl = "https://api.velas10x.com.br/game/6";
         const requestHeaders = {
             "Content-Type": "application/json",
@@ -293,108 +362,56 @@
                 let message = signal.signalEntity.message_result_signal;
                 if (!messagesResult.includes(message)) {
                     messagesResult.push(message);
+                    createHistoric()
+
                 }
             }
 
             return signal;
         };
 
-        const createSignal = (signal) => {
+        const renderSignal = async () => {
 
+            const messagesValues = document.querySelector(".messages-live")
+            const signalValue = document.querySelector(".signalContainer")
+            const protection = document.querySelector(".protection")
+            const after = document.querySelector(".after")
+
+
+            const signal = await getSignals();
             let message = "";
+
             if (signal.signalEntity.message_signal == "Analisando...") {
                 message = messageAnalytcs;
             } else {
                 message = signal.signalEntity.message_signal;
             }
 
-            const signalContainer = document.createElement("div");
-            signalContainer.classList.add("signal_component");
-
-            const signalMessage = document.createElement("div");
-            signalMessage.innerText = `${message}`;
-            signalMessage.classList.add("messages-live");
-
-            const signals_box = document.createElement("div");
-            signals_box.classList.add("box");
-
-            const spanSignals = document.createElement("span");
-            const headingTwo400 = document.createElement("h3");
-            headingTwo400.innerText = "Entrar após";
-            const exit = document.createElement("div");
-            exit.classList.add("exit-container");
-            const signalValue = document.createElement("p");
-            signalValue.innerText = `${signal.signalEntity.number_signal} X`;
-            exit.append(signalValue);
-
-            const spanSignals2 = document.createElement("span");
-            const headingTwo500 = document.createElement("h3");
-            headingTwo500.innerText = "Saída";
-            const signalValue1 = document.createElement("p");
-            signalValue1.innerText = "Alto: 2X";
-            const signalValue2 = document.createElement("p");
-            signalValue2.innerText = "Baixo: 10X";
-            const exit2 = document.createElement("div");
-            exit2.classList.add("exit-container");
-            exit2.append(signalValue1, signalValue2);
-
-            const spanSignals3 = document.createElement("span");
-            const headingTwo600 = document.createElement("h3");
-            headingTwo600.innerText = "Nº de entradas";
-            const exit3 = document.createElement("div");
-            exit3.classList.add("exit-container");
-            const signalValue3 = document.createElement("p");
-            signalValue3.innerText = "Até 3";
-            exit3.append(signalValue3);
-
-            const loader = document.createElement("div");
-            loader.classList.add("loader");
-            const loader1 = document.createElement("div");
-            loader1.classList.add("loader");
-            const loader2 = document.createElement("div");
-            loader2.classList.add("loader");
-
+            messagesValues.innerText = `${message}`
+            const loader = document.querySelectorAll(".loader")
             if (signal.signalEntity.number_signal) {
-                spanSignals.append(headingTwo400, exit);
-                spanSignals2.append(headingTwo500, exit2);
-                spanSignals3.append(headingTwo600, exit3);
-            } else {
-                spanSignals.append(headingTwo400, loader);
-                spanSignals2.append(headingTwo500, loader1);
-                spanSignals3.append(headingTwo600, loader2);
+                loader.forEach(load => {
+
+                    load.style.display = "none";
+                })
+                signalValue.innerText = `${signal.signalEntity.number_signal} x`
+                protection.innerText = "Até 3 Gales"
+                after.innerText = "20 x"
+            }
+            else {
+                loader.forEach(load => {
+
+                    load.style.display = "flex";
+                })
+                signalValue.innerText = ``
+                protection.innerText = ""
+                after.innerText = ""
+
+
+
             }
 
-            const messagesResultdiv = document.createElement("div");
-            messagesResultdiv.classList.add("messages-result");
 
-            const headingTwo700 = document.createElement("h3");
-            headingTwo700.innerText = "Histórico de resultados:";
-            const messagesResultUl = document.createElement("ul");
-            messagesResult.map((message) => {
-                const li = document.createElement("li");
-                const parts = message.split("-");
-                li.innerText = `${parts[0]} - ${parts[1]}`;
-                messagesResultUl.append(li);
-            });
-
-            messagesResultdiv.append(headingTwo700, messagesResultUl);
-
-            signals_box.append(spanSignals, spanSignals2, spanSignals3);
-
-            signalContainer.append(signalMessage, signals_box, messagesResultdiv);
-
-            return signalContainer;
-        };
-
-        const renderSignal = async () => {
-            const body = document.querySelector("body");
-            body.innerHTML = "";
-
-            const signal = await getSignals();
-
-            const signalOn = createSignal(signal);
-
-            body.appendChild(signalOn);
         };
 
         const updateMessageAnalytcs = () => {
@@ -405,10 +422,17 @@
         const intervalId = setInterval(renderSignal, 5000);
 
         const signalsInterval = setInterval(updateMessageAnalytcs, 2000);
+        renderSignal()
 
-        renderSignal();
-
-
+        const createHistoric = () => {
+            const ul = document.querySelector(".resultUl")
+            messagesResult.map((message) => {
+                const li = document.createElement("li");
+                const parts = message.split("-");
+                li.innerText = `${parts[0]} - ${parts[1]}`;
+                ul.append(li);
+            });
+        }
 
     </script>
 </body>
